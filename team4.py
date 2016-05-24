@@ -468,7 +468,9 @@ class CuteInterpreter(object):
             return self.run_expr(rhs1.value.next)
         else:
             return None
-
+            
+    def insertTable(self, id, value):
+        self.DIC[id] = value
 
     def run_expr(self, root_node):
         """
@@ -506,6 +508,9 @@ class CuteInterpreter(object):
                 [TokenType.PLUS, TokenType.MINUS, TokenType.TIMES, TokenType.DIV,\
                  TokenType.LT, TokenType.GT, TokenType.EQ]:
             return self.run_arith(op_code)
+        if op_code.type is TokenType.DEFINE:
+            result = self.run_expr(op_code.next.next)
+            return self.insertTable(op_code.next.value, result.value)
         if op_code.type is TokenType.QUOTE:
             return l_node
         else:
