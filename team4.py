@@ -288,12 +288,12 @@ class BasicPaser(object):
         elif token.type is CuteType.ID:      return Node(TokenType.ID,   token.lexeme)
         elif token.type is CuteType.L_PAREN: return Node(TokenType.LIST, self._parse_expr_list())
         elif token.type is CuteType.R_PAREN: return None
+        elif token.type is CuteType.DEFINE: return Node(TokenType.DEFINE)
         elif token.type is CuteType.APOSTROPHE:
             q_node = Node(TokenType.QUOTE)
             q_node.next=self.parse_expr()
             new_list_node = Node(TokenType.LIST, q_node)
             return new_list_node
-
         elif token.type is CuteType.QUOTE:
             q_node = Node(TokenType.QUOTE)
             return q_node
@@ -317,7 +317,8 @@ class CuteInterpreter(object):
 
     TRUE_NODE = Node(TokenType.TRUE)
     FALSE_NODE = Node(TokenType.FALSE)
-
+    DIC = dict()
+    
     def run_arith(self, arith_node):
         rhs1 = arith_node.next
         rhs2 = rhs1.next
@@ -477,7 +478,7 @@ class CuteInterpreter(object):
             return None
 
         if root_node.type is TokenType.ID:
-            return root_node
+            return self.lookupTable(root_node)
         elif root_node.type is TokenType.INT:
             return root_node
         elif root_node.type is TokenType.TRUE:
