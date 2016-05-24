@@ -471,7 +471,12 @@ class CuteInterpreter(object):
             
     def insertTable(self, id, value):
         self.DIC[id] = value
-
+    
+    def lookupTable(self, id):
+        if id.value in self.DIC:
+            return Node(TokenType.INT, self.DIC[id.value])
+        return None;
+    
     def run_expr(self, root_node):
         """
         :type root_node: Node
