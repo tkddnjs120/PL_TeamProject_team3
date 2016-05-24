@@ -474,7 +474,7 @@ class CuteInterpreter(object):
     
     def lookupTable(self, id):
         if id.value in self.DIC:
-            return Node(TokenType.INT, self.DIC[id.value])
+            return self.DIC[id.value]
         return None;
     
     def run_expr(self, root_node):
@@ -515,7 +515,7 @@ class CuteInterpreter(object):
             return self.run_arith(op_code)
         if op_code.type is TokenType.DEFINE:
             result = self.run_expr(op_code.next.next)
-            return self.insertTable(op_code.next.value, result.value)
+            return self.insertTable(op_code.next.value, result)
         if op_code.type is TokenType.QUOTE:
             return l_node
         else:
