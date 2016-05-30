@@ -433,13 +433,16 @@ class CuteInterpreter(object):
             if rhs1.type is not TokenType.LIST: return self.TRUE_NODE
             if rhs1.type is TokenType.LIST:
                 if rhs1.value.type is TokenType.QUOTE:
-                    if rhs1.value.next is not TokenType.LIST:
+                    if rhs1.value.next.type is not TokenType.LIST:
                         return self.TRUE_NODE
             return self.FALSE_NODE
 
         elif func_node.type is TokenType.EQ_Q:
             if rhs1.type is TokenType.INT and rhs2.type is TokenType.INT:
                 if rhs1.value == rhs2.value:
+                    return self.TRUE_NODE
+            elif rhs1.value.type is TokenType.QUOTE and rhs2.value.type is TokenType.QUOTE:
+                if rhs1.value.next.value == rhs2.value.next.value:
                     return self.TRUE_NODE
             return self.FALSE_NODE
 
