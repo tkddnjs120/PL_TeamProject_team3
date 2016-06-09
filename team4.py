@@ -289,6 +289,7 @@ class BasicPaser(object):
         elif token.type is CuteType.L_PAREN: return Node(TokenType.LIST, self._parse_expr_list())
         elif token.type is CuteType.R_PAREN: return None
         elif token.type is CuteType.DEFINE: return Node(TokenType.DEFINE)
+        elif token.type is CuteType.LAMBDA: return Node(TokenType.LAMBDA)
         elif token.type is CuteType.APOSTROPHE:
             q_node = Node(TokenType.QUOTE)
             q_node.next=self.parse_expr()
@@ -519,6 +520,12 @@ class CuteInterpreter(object):
         if op_code.type is TokenType.DEFINE:
             result = self.run_expr(op_code.next.next)
             return self.insertTable(op_code.next.value, result)
+        if op_code.type is TokenType.LAMBDA:
+            if op_code.next.next.next is None:
+                return l_node
+            elif op_code.next.next.next.type is TokenType.INT:
+                self.insertTable(op_code.next.value.value, op_code.next.next.next)
+                return self.run_arith(op_code.next.next.value)
         if op_code.type is TokenType.QUOTE:
             return l_node
         else:
