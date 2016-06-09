@@ -521,11 +521,13 @@ class CuteInterpreter(object):
             result = self.run_expr(op_code.next.next)
             return self.insertTable(op_code.next.value, result)
         if op_code.type is TokenType.LAMBDA:
-            if op_code.next.next.next is None:
+            if l_node.next is None:
                 return l_node
-            elif op_code.next.next.next.type is TokenType.INT:
-                self.insertTable(op_code.next.value.value, op_code.next.next.next)
+            elif l_node.next.type is TokenType.INT:
+                self.insertTable(op_code.next.value.value, l_node.next)
                 return self.run_arith(op_code.next.next.value)
+        if op_code.type is TokenType.LIST:
+            return self.run_list(op_code)
         if op_code.type is TokenType.QUOTE:
             return l_node
         else:
