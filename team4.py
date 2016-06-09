@@ -289,6 +289,7 @@ class BasicPaser(object):
         elif token.type is CuteType.L_PAREN: return Node(TokenType.LIST, self._parse_expr_list())
         elif token.type is CuteType.R_PAREN: return None
         elif token.type is CuteType.DEFINE: return Node(TokenType.DEFINE)
+        elif token.type is CuteType.LAMBDA: return Node(TokenType.LAMBDA)
         elif token.type is CuteType.APOSTROPHE:
             q_node = Node(TokenType.QUOTE)
             q_node.next=self.parse_expr()
@@ -471,8 +472,15 @@ class CuteInterpreter(object):
             return self.run_expr(rhs1.value.next)
         else:
             return None
-
-
+            
+    def insertTable(self, id, value):
+        self.DIC[id] = value
+    
+    def lookupTable(self, id):
+        if id.value in self.DIC:
+            return self.DIC[id.value]
+        return None;
+    
     def run_expr(self, root_node):
         """
         :type root_node: Node
@@ -509,6 +517,17 @@ class CuteInterpreter(object):
                 [TokenType.PLUS, TokenType.MINUS, TokenType.TIMES, TokenType.DIV,\
                  TokenType.LT, TokenType.GT, TokenType.EQ]:
             return self.run_arith(op_code)
+        if op_code.type is TokenType.DEFINE:
+            result = self.run_expr(op_code.next.next)
+            return self.insertTable(op_code.next.value, result)
+        if op_code.type is TokenType.LAMBDA:
+            if l_node.next is None:
+                return l_node
+            elif l_node.next.type is TokenType.INT:
+                self.insertTable(op_code.next.value.value, l_node.next)
+                return self.run_arith(op_code.next.next.value)
+        if op_code.type is TokenType.LIST:
+            return self.run_list(op_code)
         if op_code.type is TokenType.QUOTE:
             return l_node
         else:
