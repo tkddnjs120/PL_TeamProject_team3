@@ -525,6 +525,10 @@ class CuteInterpreter(object):
             elif l_node.next.type is TokenType.INT:
                 self.insertTable(op_code.next.value.value, l_node.next)
                 return self.run_arith(op_code.next.next.value)
+        if op_code.type is TokenType.ID:
+            temp = self.lookupTable(op_code)
+            temp.next = op_code.next
+            return self.run_list(temp)
         if op_code.type is TokenType.LIST:
             return self.run_list(op_code)
         if op_code.type is TokenType.QUOTE:
