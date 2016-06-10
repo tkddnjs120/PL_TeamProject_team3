@@ -526,9 +526,10 @@ class CuteInterpreter(object):
         if op_code.type is TokenType.LAMBDA:
             if l_node.next is None:
                 return l_node
-            elif l_node.next.type is TokenType.INT:
-                self.insertTable(op_code.next.value.value, l_node.next)
-                return self.run_arith(op_code.next.next.value)
+            else:
+                temp = self.run_expr(l_node.next)
+                self.insertTable(op_code.next.value.value, temp)
+                return self.run_list(op_code.next.next)
         if op_code.type is TokenType.ID:
             temp = self.lookupTable(op_code)
             temp.next = op_code.next
