@@ -430,6 +430,7 @@ class CuteInterpreter(object):
             return create_quote_node(expr_rhs1, True)
 
         elif func_node.type is TokenType.ATOM_Q:
+            rhs1 = self.run_expr(rhs1)
             if list_is_null(rhs1): return self.TRUE_NODE
             if rhs1.type is not TokenType.LIST: return self.TRUE_NODE
             if rhs1.type is TokenType.LIST:
@@ -439,6 +440,8 @@ class CuteInterpreter(object):
             return self.FALSE_NODE
 
         elif func_node.type is TokenType.EQ_Q:
+            rhs1 = self.run_expr(rhs1)
+            rhs2 = self.run_expr(rhs2)
             if rhs1.type is TokenType.INT and rhs2.type is TokenType.INT:
                 if rhs1.value == rhs2.value:
                     return self.TRUE_NODE
@@ -448,6 +451,7 @@ class CuteInterpreter(object):
             return self.FALSE_NODE
 
         elif func_node.type is TokenType.NULL_Q:
+            rhs1 = self.run_expr(rhs1)
             if list_is_null(rhs1): return self.TRUE_NODE
             return self.FALSE_NODE
 
